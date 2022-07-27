@@ -4,9 +4,9 @@ const gigService = require('./gig.service')
 module.exports = {
   getGigs,
   getGigById,
-  addGig,
-  updateGig,
-  removeGig,
+  // addGig,
+  // updateGig,
+  // removeGig,
 }
 
 // LIST
