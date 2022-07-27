@@ -17,8 +17,8 @@ router.get('/:id', getGigById)
 // router.put('/:id', requireAuth, requireAdmin, updateGig)
 // router.delete('/:id', requireAuth, requireAdmin, removeGig)
 
-router.post('/', addGig)
-router.put('/:id', updateGig)
-router.delete('/:id', removeGig)
+// router.post('/', addGig)
+// router.put('/:id', updateGig)
+// router.delete('/:id', removeGig)
 
 module.exports = router
