@@ -12,25 +12,49 @@ module.exports = {
 
 async function query(filterBy) {
   try {
+    console.log('filterBy', filterBy);
     const criteria = _buildCriteria(filterBy)
     // const criteria = {}
 
     const collection = await dbService.getCollection('gig')
     var gigs = await collection.find(criteria).toArray()
-    return gigs
+    let filterd = []
+    if (filterBy.category && filterBy.priceBy) {
+      console.log('im herer',filterBy.priceBy);
+          const { category, priceBy, title } = filterBy
+          
+          filterd = gigs.filter((gig) => {
+            if (title) {
+              return (
+                gig.category === category &&
+                gig.title.includes(title) &&
+                gig.price > priceBy.min &&
+                gig.price < priceBy.max
+              )
+            }
+            return (
+              gig.category === category &&
+              gig.price > priceBy.min &&
+              gig.price < priceBy.max
+            )
+          })
+          console.log('filtered',filterd);
+        }
+    
+    return filterd.length ? filterd : gigs
   } catch (err) {
     logger.error('cannot find gigs', err)
     throw err
   }
 }
 
-async function getById(toyId) {
+async function getById(gigId) {
   try {
-    const collection = await dbService.getCollection('toy')
-    const toy = collection.findOne({ _id: ObjectId(toyId) })
-    return toy
+    const collection = await dbService.getCollection('gig')
+    const gig = collection.findOne({ _id: ObjectId(gigId) })
+    return gig
   } catch (err) {
-    logger.error(`while finding toy ${toyId}`, err)
+    logger.error(`while finding gig ${gigId}`, err)
     throw err
   }
 }

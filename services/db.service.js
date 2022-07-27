@@ -7,7 +7,7 @@ module.exports = {
 }
 
 // Database Name - enter your db
-const dbName = 'gig_db'
+const dbName = 'binderr_db'
 
 var dbConn = null
 

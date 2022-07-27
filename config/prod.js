@@ -1,4 +1,4 @@
 module.exports = {
   dbURL:
-    'mongodb+srv://rzshachar:123@cluster0.cxvp8.mongodb.net/?retryWrites=true&w=majority',
+    'mongodb+srv://toys:1234@atlascluster.tc7sh.mongodb.net/?retryWrites=true&w=majority'
 }
