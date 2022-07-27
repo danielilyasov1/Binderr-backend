@@ -7,7 +7,7 @@ module.exports = {
 }
 
 // Database Name - enter your db
-const dbName = 'toy_db'
+const dbName = 'gig_db'
 
 var dbConn = null
 
