@@ -12,7 +12,7 @@ module.exports = {
 
 async function query(filterBy) {
   try {
-    console.log('filterBy', filterBy);
+    console.log('filterBy', filterBy)
     const criteria = _buildCriteria(filterBy)
     // const criteria = {}
 
@@ -20,27 +20,28 @@ async function query(filterBy) {
     var gigs = await collection.find(criteria).toArray()
     let filterd = []
     if (filterBy.category && filterBy.priceBy) {
-      console.log('im herer',filterBy.priceBy);
-          const { category, priceBy, title } = filterBy
-          
-          filterd = gigs.filter((gig) => {
-            if (title) {
-              return (
-                gig.category === category &&
-                gig.title.includes(title) &&
-                gig.price > priceBy.min &&
-                gig.price < priceBy.max
-              )
-            }
-            return (
-              gig.category === category &&
-              gig.price > priceBy.min &&
-              gig.price < priceBy.max
-            )
-          })
-          console.log('filtered',filterd);
+      const { min, max } = JSON.parse(filterBy.priceBy)
+      const { category, title } = filterBy
+
+      filterd = gigs.filter((gig) => {
+        if (title) {
+          return (
+            gig.category === category &&
+            gig.title.includes(title) &&
+            gig.price > min &&
+            gig.price < max
+          )
         }
-    
+        console.log('gig', gig.price, gig.category)
+        return (
+          gig.category === category &&
+          gig.price > min &&
+          gig.price < max
+        )
+      })
+      console.log('filtered', filterd)
+    }
+
     return filterd.length ? filterd : gigs
   } catch (err) {
     logger.error('cannot find gigs', err)
@@ -111,8 +112,7 @@ function _buildCriteria(filterBy) {
   //   criteria.labels = { $in: filterBy.labels }
   // }
 
-
-//what we need to use
+  //what we need to use
   // try {
   //   const gigs = await storageService.query(KEY)
   //   if (filterBy.category && filterBy.priceBy) {
@@ -143,7 +143,7 @@ function _buildCriteria(filterBy) {
 
   //   if (!category && !priceBy) {
   //     filteredGigs = gigs.filter((gig) => regex.test(gig.title))
-                    
+
   //     return Promise.resolve(filteredGigs)
   //   }
 
@@ -159,12 +159,10 @@ function _buildCriteria(filterBy) {
   //     .filter((gig) => gig.category === category)
   //     .filter((gig) => gig.price > priceBy.min && gig.price < priceBy.max)
 
-
   //   return Promise.resolve(filteredGigs)
   // } catch (err) {
   //   console.error(err)
   // }
-
 
   return criteria
 }
