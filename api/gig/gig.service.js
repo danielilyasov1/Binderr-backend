@@ -18,12 +18,11 @@ async function query(filterBy) {
 
     const collection = await dbService.getCollection('gig')
     var gigs = await collection.find(criteria).toArray()
-    let filterd = []
     if (filterBy.category && filterBy.priceBy) {
       const { min, max } = JSON.parse(filterBy.priceBy)
       const { category, title } = filterBy
 
-      filterd = gigs.filter((gig) => {
+      gigs = gigs.filter((gig) => {
         if (title) {
           return (
             gig.category === category &&
@@ -39,10 +38,19 @@ async function query(filterBy) {
           gig.price < max
         )
       })
-      console.log('filtered', filterd)
+      console.log('filtered', gigs)
+    }
+    if(filterBy.category){
+      gigs = gigs.filter(gig => gig.category === filterBy.category)
+    }
+    if(filterBy.title){
+      const regex = new RegExp(filterBy.title, 'i')
+      gigs = gigs.filter((gig) => regex.test(gig.title))
     }
 
-    return filterd.length ? filterd : gigs
+
+
+    return gigs
   } catch (err) {
     logger.error('cannot find gigs', err)
     throw err
