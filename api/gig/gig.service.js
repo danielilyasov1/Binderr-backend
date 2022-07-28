@@ -111,5 +111,60 @@ function _buildCriteria(filterBy) {
   //   criteria.labels = { $in: filterBy.labels }
   // }
 
+
+//what we need to use
+  // try {
+  //   const gigs = await storageService.query(KEY)
+  //   if (filterBy.category && filterBy.priceBy) {
+  //     const { category, priceBy, title } = filterBy
+  //     console.log('priceBy',priceBy)
+  //     const filterd = gigs.filter((gig) => {
+  //       if (title) {
+  //         return (
+  //           gig.category === category &&
+  //           gig.title.includes(title) &&
+  //           gig.price > priceBy.min &&
+  //           gig.price < priceBy.max
+  //         )
+  //       }
+  //       return (
+  //         gig.category === category &&
+  //         gig.price > priceBy.min &&
+  //         gig.price < priceBy.max
+  //       )
+  //     })
+
+  //     return Promise.resolve(filterd)
+  //   }
+  //   const { title, category ,priceBy} = filterBy
+  //   const regex = new RegExp(title, 'i')
+  //   console.log('ata mefager')
+  //   let filteredGigs
+
+  //   if (!category && !priceBy) {
+  //     filteredGigs = gigs.filter((gig) => regex.test(gig.title))
+                    
+  //     return Promise.resolve(filteredGigs)
+  //   }
+
+  //   if (!category) {
+  //     filteredGigs = gigs.filter((gig) => regex.test(gig.title))
+  //                   .filter((gig) => gig.price > priceBy.min && gig.price < priceBy.max)
+
+  //     return Promise.resolve(filteredGigs)
+  //   }
+
+  //   filteredGigs = gigs
+  //     .filter((gig) => regex.test(gig.title))
+  //     .filter((gig) => gig.category === category)
+  //     .filter((gig) => gig.price > priceBy.min && gig.price < priceBy.max)
+
+
+  //   return Promise.resolve(filteredGigs)
+  // } catch (err) {
+  //   console.error(err)
+  // }
+
+
   return criteria
 }
