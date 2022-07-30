@@ -1,5 +1,7 @@
 const dbService = require('../../services/db.service')
 const ObjectId = require('mongodb').ObjectId
+const logger = require('../../services/logger.service')
+
 // const userService = require('../user/user.service')
 
 module.exports = {
@@ -11,10 +13,10 @@ module.exports = {
 }
 
 async function query(filterBy = {}) {
-  try{
+  try {
     const collection = await dbService.getCollection('order')
-     var orders = await collection.find({}).toArray()
-  }catch(e){
+    var orders = await collection.find({}).toArray()
+  } catch (e) {
     console.error('error cant get orders', e)
   }
 
@@ -36,19 +38,19 @@ async function query(filterBy = {}) {
 // }
 
 async function addOrder(order) {
-    try {
-      const collection = await dbService.getCollection('order')
-      const addedOrder = await collection.insertOne(order)
-      console.log('added', addedOrder);
-      // return addedOrder.ops[0]
-      return addedOrder
-    } catch (err) {
-      logger.error('cannot insert order', err)
-      throw err
-    }
+  try {
+    const collection = await dbService.getCollection('order')
+    const addedOrder = await collection.insertOne(order)
+    console.log('added', addedOrder);
+    return addedOrder.ops[0]
+    // return addedOrder
+  } catch (err) {
+    logger.error('cannot insert order', err)
+    throw err
   }
+}
 
-  
+
 async function getById(orderId) {
   try {
     const collection = await dbService.getCollection('order')
@@ -63,12 +65,13 @@ async function getById(orderId) {
 
 async function update(order) {
   try {
-    var id = ObjectId(order._id)
-    delete order._id
+    const orderToUpdate = { ...order }
+    delete orderToUpdate._id
     const collection = await dbService.getCollection('order')
-    await collection.updateOne({ _id: id }, { $set: { ...order } })
+    await collection.updateOne({ _id: ObjectId(order._id) }, { $set: { ...orderToUpdate } })
     return order
   } catch (err) {
+    console.error(err)
     logger.error(`cannot update order ${order._id}`, err)
     throw err
   }

@@ -1,5 +1,6 @@
 const logger = require('../../services/logger.service')
 const gigService = require('./gig.service')
+const userService = require('../user/user.service')
 
 module.exports = {
   getGigs,
@@ -9,12 +10,23 @@ module.exports = {
   // removeGig,
 }
 
+async function enrichGigData(gig) {
+  return {
+    ...gig,
+    owner: await userService.getById(gig.ownerId),
+  }
+}
+
 // LIST
 async function getGigs(req, res) {
   try {
     const filterBy = req.query
     const gigs = await gigService.query(filterBy)
-    res.json(gigs)
+    const enrichedGigs = []
+    for (const gig of gigs) {
+      enrichedGigs.push(await enrichGigData(gig))
+    }
+    res.json(enrichedGigs);
   } catch (err) {
     logger.error('Failed to get gigs', err)
     res.status(500).send({ err: 'Failed to get gigs' })
@@ -26,7 +38,7 @@ async function getGigById(req, res) {
   try {
     const { id } = req.params
     const gig = await gigService.getById(id)
-    res.json(gig)
+    res.json(await enrichGigData(gig))
   } catch (err) {
     logger.error('Failed to get gig', err)
     res.status(500).send({ err: 'Failed to get gig' })

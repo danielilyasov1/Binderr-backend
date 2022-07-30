@@ -1,5 +1,7 @@
 
-const orderService = require('./order.service.js')
+const orderService = require('./order.service')
+const userService = require('../user/user.service')
+const gigService = require('../gig/gig.service')
 const logger = require('../../services/logger.service')
 
 module.exports = {
@@ -10,11 +12,24 @@ module.exports = {
   // deleteReview,
 }
 
+async function enrichOrderData(order) {
+  return {
+    ...order,
+    buyer: await userService.getById(order.buyerId),
+    seller: await userService.getById(order.sellerId),
+    gig: await gigService.getById(order.gigId),
+  }
+}
+
 async function getOrders(req, res) {
   try {
     // const filterBy = req.query
     const orders = await orderService.query()
-    res.send(orders)
+    const enrichedOrders = [];
+    for (const order of orders) {
+      enrichedOrders.push(await enrichOrderData(order))
+    }
+    res.json(enrichedOrders);
   } catch (err) {
     logger.error('Failed to get orders', err)
     res.status(500).send({ err: 'Failed to get orders' })
@@ -26,7 +41,7 @@ async function addOrder(req, res) {
     const order = req.body
     console.log('order', order);
     const addedOrder = await orderService.addOrder(order)
-    res.send(addedOrder)
+    res.json(await enrichOrderData(addedOrder))
   } catch (err) {
     logger.error('Failed to add order', err)
     res.status(500).send({ err: 'Failed to add order' })
@@ -37,7 +52,7 @@ async function getOrderById(req, res) {
   try {
     const { id } = req.params
     const order = await orderService.getById(id)
-    res.json(order)
+    res.json(await enrichOrderData(order))
   } catch (err) {
     logger.error('Failed to get order', err)
     res.status(500).send({ err: 'Failed to get order' })
@@ -49,7 +64,7 @@ async function updateOrder(req, res) {
   try {
     const order = req.body
     const updatedOrder = await orderService.update(order)
-    res.json(updatedOrder)
+    res.json(await enrichOrderData(updatedOrder))
   } catch (err) {
     logger.error('Failed to update order', err)
     res.status(500).send({ err: 'Failed to update order' })
